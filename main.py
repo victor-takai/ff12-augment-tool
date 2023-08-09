@@ -99,11 +99,11 @@ def find_and_edit_file(root_folder, target_filename, output_folder, first_aug_en
 
                 print(f"Modified content of {target_filename} written to {output_path}")
 
-    log_json_path = os.path.join(output_folder, "modification_log.json")
+    log_json_path = os.path.join(output_folder, "log.json")
     with open(log_json_path, 'w', encoding='utf-8') as log_file:
         json.dump(log_entries, log_file, indent=4)
 
-    print(f"Modification log written to {log_json_path}")
+    print(f"Log written to {log_json_path}")
 
 # Matches the 'entry_pattern' to find all 'entryXX' functions 
 # and also checks if 'btlAtelSetUnit' and 'btlAtelSetAbility' exists
@@ -114,6 +114,8 @@ def edit_file(current_file, source_path, first_aug_enum, second_aug_enum, log_en
         matched_string = match.group(1)
         if 'btlAtelSetUnit' in matched_string and 'btlAtelSetAbility' in matched_string:
             edited_file, log_entries = edit_augments(edited_file, matched_string, source_path, first_aug_enum, second_aug_enum, log_entries)
+        else:
+            print(f'Could not find entry in file: {source_path}')
 
     return edited_file, log_entries
 
@@ -126,19 +128,19 @@ def edit_augments(edited_file, matched_string, source_path, first_aug_enum, seco
         
         if set_ability_match:
             # Hexdecimal representation of augments bitfield
-            first_aug_hex = set_ability_match.group(1)
-            second_aug_hex = set_ability_match.group(2)
+            first_augs_hex = set_ability_match.group(1)
+            second_augs_hex = set_ability_match.group(2)
         
             # Decimal representation of augments bitfields, also makes it positive
-            first_aug_dec = abs(int(first_aug_hex, 16))
-            second_aug_dec = abs(int(second_aug_hex, 16))
+            first_augs_dec = abs(int(first_augs_hex, 16))
+            second_augs_dec = abs(int(second_augs_hex, 16))
 
-            alt_first_aug_dec, alt_second_aug_dec = remove_augments(first_aug_dec, second_aug_dec, first_aug_enum, second_aug_enum)
-            alt_first_aug_hex = hex(alt_first_aug_dec).lower()
-            alt_second_aug_hex = hex(alt_second_aug_dec).lower()
+            alt_first_augs_dec, alt_second_augs_dec = remove_augments(first_augs_dec, second_augs_dec, first_aug_enum, second_aug_enum)
+            alt_first_augs_hex = hex(alt_first_augs_dec).lower()
+            alt_second_augs_hex = hex(alt_second_augs_dec).lower()
 
-            original_entry = f"btlAtelSetAbility({first_aug_hex}, {second_aug_hex})"
-            edited_entry = f"btlAtelSetAbility({alt_first_aug_hex}, {alt_second_aug_hex})"
+            unpacked_entry = f"btlAtelSetAbility({first_augs_hex}, {second_augs_hex})"
+            edited_entry = f"btlAtelSetAbility({alt_first_augs_hex}, {alt_second_augs_hex})"
 
             log_entry = {
                 "path": source_path,
@@ -146,43 +148,43 @@ def edit_augments(edited_file, matched_string, source_path, first_aug_enum, seco
                     {
                         "btl_atel_set_unit": unit_number,
                         "unpacked": {
-                            "btl_atel_set_ability": original_entry,
-                            "first_arg_augments":  map_augments(first_aug_dec, FirstAugment),
-                            "second_arg_augments": map_augments(second_aug_dec, SecondAugment)
+                            "btl_atel_set_ability": unpacked_entry,
+                            "first_arg_augments":  map_augments(first_augs_dec, FirstAugment),
+                            "second_arg_augments": map_augments(second_augs_dec, SecondAugment)
                         },
                         "edited": {
                             "btl_atel_set_ability": edited_entry,
-                            "first_arg_augments": map_augments(alt_first_aug_dec, FirstAugment),
-                            "second_arg_augments": map_augments(alt_second_aug_dec, SecondAugment)
+                            "first_arg_augments": map_augments(alt_first_augs_dec, FirstAugment),
+                            "second_arg_augments": map_augments(alt_second_augs_dec, SecondAugment)
                         }
                     }
                 ]
             }
 
             # Check if entries are different, we don't want to add stuff that doesn't have any changes
-            if first_aug_dec != alt_first_aug_dec or second_aug_dec != alt_second_aug_dec:
+            if first_augs_dec != alt_first_augs_dec or second_augs_dec != alt_second_augs_dec:
                 index = next((index for index, entry in enumerate(log_entries) if entry["path"] == source_path), None)
                 if index is None:
                     log_entries.append(log_entry)
                 else:
                     units = log_entries[index]["units"] + log_entry["units"]
                     log_entries[index]["units"] = units
-                edited_file = edited_file.replace(original_entry, edited_entry)
+                edited_file = edited_file.replace(unpacked_entry, edited_entry)
             else:
-                print(f'NOTHING TO CHANGE: {source_path} - btlAtelSetUnit({unit_number}) - {original_entry}')
+                print(f'Nothing to change: {source_path} - btlAtelSetUnit({unit_number}) - {unpacked_entry}')
 
     return edited_file, log_entries
 
-def remove_augments(first_aug, second_aug, first_aug_enum, second_aug_enum):
-    if first_aug & first_aug_enum.value and first_aug_enum != FirstAugment.NONE:
-        alt_first_aug = first_aug ^ first_aug_enum.value
+def remove_augments(first_augs, second_augs, first_aug_enum, second_aug_enum):
+    if first_augs & first_aug_enum.value and first_aug_enum != FirstAugment.NONE:
+        alt_first_aug = first_augs ^ first_aug_enum.value
     else:
-        alt_first_aug = first_aug
+        alt_first_aug = first_augs
 
-    if second_aug & second_aug_enum.value and second_aug_enum != SecondAugment.NONE:
-        alt_second_aug = second_aug ^ second_aug_enum.value
+    if second_augs & second_aug_enum.value and second_aug_enum != SecondAugment.NONE:
+        alt_second_aug = second_augs ^ second_aug_enum.value
     else:
-        alt_second_aug = second_aug
+        alt_second_aug = second_augs
 
     return alt_first_aug, alt_second_aug
 
