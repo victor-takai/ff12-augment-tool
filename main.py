@@ -6,7 +6,7 @@ from augments import FirstAugment, SecondAugment
 
 set_unit_pattern = r'btlAtelSetUnit\(([0-9]+)\)'
 set_ability_pattern = r'btlAtelSetAbility\((-?0x[0-9a-fA-F]+), (-?0x[0-9a-fA-F]+)\)'
-entry_pattern = r'function entry[0-9]+\(\)\s*{([^}]*btlAtelSetUnit[^}]*btlAtelSetAbility[^}]*)}'
+entry_pattern = r'entry[0-9]+\(\)\s*{([^}]*btlAtelSetUnit[^}]*btlAtelSetAbility[^}]*)}'
 
 def find_and_edit_files(root_folder, target_filename, output_folder, new_first_augs, new_second_augs, should_add):
     log_entries = []
@@ -67,11 +67,19 @@ def edit_augments(edited_file, matched_string, source_path, new_first_augs, new_
             orig_second_augs = abs(int(second_augs_hex, 16))
 
             alt_first_augs, alt_second_augs = modify_orig_augs(orig_first_augs, orig_second_augs, new_first_augs, new_second_augs, should_add)
-            alt_first_augs_hex = hex(alt_first_augs).lower()
-            alt_second_augs_hex = hex(alt_second_augs).lower()
 
-            unpacked_entry = f"{first_augs_hex}, {second_augs_hex}"
-            edited_entry = f"{alt_first_augs_hex}, {alt_second_augs_hex}"
+            if alt_first_augs == 0:
+                alt_first_augs_hex = "0"
+            else:
+                alt_first_augs_hex = hex(alt_first_augs).lower()
+
+            if alt_second_augs == 0:
+                alt_second_augs_hex = "0"
+            else:
+                alt_second_augs_hex = hex(alt_second_augs).lower()
+
+            unpacked_entry = f"btlAtelSetAbility({first_augs_hex}, {second_augs_hex})"
+            edited_entry = f"btlAtelSetAbility({alt_first_augs_hex}, {alt_second_augs_hex})"
 
             log_entry = {
                 "path": source_path,
@@ -79,12 +87,12 @@ def edit_augments(edited_file, matched_string, source_path, new_first_augs, new_
                     {
                         "unit": unit_number,
                         "unpacked": {
-                            "btl_atel_set_ability": unpacked_entry,
+                            "btl_atel_set_ability": f"{first_augs_hex}, {second_augs_hex}",
                             "first_arg_augments":  map_augments(orig_first_augs, FirstAugment),
                             "second_arg_augments": map_augments(orig_second_augs, SecondAugment)
                         },
                         "edited": {
-                            "btl_atel_set_ability": edited_entry,
+                            "btl_atel_set_ability": f"{alt_first_augs_hex}, {alt_second_augs_hex}",
                             "first_arg_augments": map_augments(alt_first_augs, FirstAugment),
                             "second_arg_augments": map_augments(alt_second_augs, SecondAugment)
                         }
