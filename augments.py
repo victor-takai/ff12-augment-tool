@@ -33,7 +33,6 @@ class FirstAugment(Enum):
     NO_EXP =                    0x0000_0004
     SPELLBOUND =                0x0000_0002
     PIERCING_MAGICK =           0x0000_0001
-    NONE =                      0x0000_0000
 
 class SecondAugment(Enum):
     OFFERING =                  0x8000_0000 # Turtleshell Choker Effect
@@ -68,4 +67,3 @@ class SecondAugment(Enum):
     BATTLE_LORE_9 =             0x0000_0004
     BATTLE_LORE_10 =            0x0000_0002
     BATTLE_LORE_11 =            0x0000_0001
-    NONE =                      0x0000_0000

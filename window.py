@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QRadioButton, QGridLayout, QCheckBox, QPushButton, QFrame, QMessageBox
 from augments import FirstAugment, SecondAugment
+from main import find_and_edit_files
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -22,7 +23,16 @@ class MainWindow(QMainWindow):
         
         self.radio_layout.addWidget(self.add_radio)
         self.radio_layout.addWidget(self.remove_radio)
+
+        self.select_all_button = QPushButton("Select All")
+        self.select_all_button.clicked.connect(self.select_all_clicked)
         
+        self.deselect_all_button = QPushButton("Deselect All")
+        self.deselect_all_button.clicked.connect(self.deselect_all_clicked)
+        
+        self.radio_layout.addWidget(self.select_all_button)
+        self.radio_layout.addWidget(self.deselect_all_button)
+
         self.layout.addLayout(self.radio_layout)
         
         self.grid_frame = QFrame()
@@ -50,16 +60,39 @@ class MainWindow(QMainWindow):
         
         self.grid_frame.setStyleSheet("background-color: rgb(211, 211, 211);")
 
+    def select_all_clicked(self):
+        for checkbox in self.checkboxes:
+            checkbox.setChecked(True)
+
+    def deselect_all_clicked(self):
+            for checkbox in self.checkboxes:
+                checkbox.setChecked(False)
+
     def edit_button_clicked(self):
-        selected_items = [checkbox.text() for checkbox in self.checkboxes if checkbox.isChecked()]
-        
-        if selected_items:
+        selected_augs = [checkbox.text() for checkbox in self.checkboxes if checkbox.isChecked()]
+        first_augs = []
+        second_augs = []
+
+        for aug_name in selected_augs:
+            first_aug = next((enum for enum in FirstAugment if enum.name == aug_name), None)
+            if first_aug != None:
+                first_augs.append(first_aug)
+
+            second_aug = next((enum for enum in SecondAugment if enum.name == aug_name), None)
+            if second_aug != None:
+                second_augs.append(second_aug)
+
+        root_folder = "unpacked"  # Replace with the actual root folder path
+        target_filename = "section_000.c"   # Replace with the target file's name
+        output_folder = "edited"  # Replace with the output folder path
+        find_and_edit_files(root_folder, target_filename, output_folder, first_augs, second_augs, self.add_radio.isChecked())
+
+        if selected_augs:
             mode = "added" if self.add_radio.isChecked() else "removed"
             message = f"Augments {mode}!"
             QMessageBox.information(self, "Info", message)
         else:
             QMessageBox.warning(self, "Info", "No items selected.")
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
