@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import shutil
 from augments import FirstAugment, SecondAugment
 
 set_unit_pattern = r'btlAtelSetUnit\(([0-9]+)\)'
@@ -10,22 +11,24 @@ entry_pattern = r'function entry[0-9]+\(\)\s*{([^}]*btlAtelSetUnit[^}]*btlAtelSe
 def find_and_edit_files(root_folder, target_filename, output_folder, new_first_augs, new_second_augs, should_add):
     log_entries = []
     
-    for root, _, files in os.walk(root_folder):
-        for file_name in files:
-            if file_name == target_filename:
-                source_path = os.path.join(root, file_name)
+    for folder_path, _, filenames in os.walk(root_folder):
+        for file_name in filenames:
+            source_path = os.path.join(folder_path, file_name)
 
+            relative_path = os.path.relpath(source_path, root_folder)
+            output_path = os.path.join(output_folder, relative_path)
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            
+            if file_name == target_filename:
                 with open(source_path, 'r', encoding='utf-8') as file:
                     current_file = file.read()
 
                 edited_file, log_entries = edit_file(current_file, source_path, new_first_augs, new_second_augs, log_entries, should_add)
 
-                relative_path = os.path.relpath(source_path, root_folder)
-                output_path = os.path.join(output_folder, relative_path)
-                os.makedirs(os.path.dirname(output_path), exist_ok=True)
-                
                 with open(output_path, 'w', encoding='utf-8') as output_file:
                     output_file.write(edited_file)
+            else:
+                shutil.copy(source_path, output_path)
 
     log_json_path = os.path.join(output_folder, "log.json")
     with open(log_json_path, 'w', encoding='utf-8') as log_file:
