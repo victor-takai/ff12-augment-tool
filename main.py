@@ -27,8 +27,6 @@ def find_and_edit_files(root_folder, target_filename, output_folder, new_first_a
                 with open(output_path, 'w', encoding='utf-8') as output_file:
                     output_file.write(edited_file)
 
-                print(f"Modified content of {target_filename} written to {output_path}")
-
     log_json_path = os.path.join(output_folder, "log.json")
     with open(log_json_path, 'w', encoding='utf-8') as log_file:
         json.dump(log_entries, log_file, indent=4)
@@ -53,7 +51,7 @@ def edit_file(current_file, source_path, first_augs, second_augs, log_entries, s
 # It will edit the hex values of both arguments to remove the enums passed
 def edit_augments(edited_file, matched_string, source_path, new_first_augs, new_second_augs, log_entries, should_add):
     for unit_match in re.finditer(set_unit_pattern, matched_string):
-        unit_number = int(unit_match.group(1))
+        unit_number = f"{int(unit_match.group(1))}"
         set_ability_match = re.search(set_ability_pattern, matched_string)
         
         if set_ability_match:
@@ -69,14 +67,14 @@ def edit_augments(edited_file, matched_string, source_path, new_first_augs, new_
             alt_first_augs_hex = hex(alt_first_augs).lower()
             alt_second_augs_hex = hex(alt_second_augs).lower()
 
-            unpacked_entry = f"btlAtelSetAbility({first_augs_hex}, {second_augs_hex})"
-            edited_entry = f"btlAtelSetAbility({alt_first_augs_hex}, {alt_second_augs_hex})"
+            unpacked_entry = f"{first_augs_hex}, {second_augs_hex}"
+            edited_entry = f"{alt_first_augs_hex}, {alt_second_augs_hex}"
 
             log_entry = {
                 "path": source_path,
-                "units": [
+                "entries": [
                     {
-                        "btl_atel_set_unit": unit_number,
+                        "unit": unit_number,
                         "unpacked": {
                             "btl_atel_set_ability": unpacked_entry,
                             "first_arg_augments":  map_augments(orig_first_augs, FirstAugment),
@@ -97,11 +95,11 @@ def edit_augments(edited_file, matched_string, source_path, new_first_augs, new_
                 if index is None:
                     log_entries.append(log_entry)
                 else:
-                    units = log_entries[index]["units"] + log_entry["units"]
-                    log_entries[index]["units"] = units
+                    entries = log_entries[index]["entries"] + log_entry["entries"]
+                    log_entries[index]["entries"] = entries
                 edited_file = edited_file.replace(unpacked_entry, edited_entry)
             else:
-                print(f'Nothing to change: {source_path} - btlAtelSetUnit({unit_number}) - {unpacked_entry}')
+                print(f'Nothing to change on: {source_path} - btlAtelSetUnit({unit_number}) - btlAtelSetAbility({unpacked_entry})')
 
     return edited_file, log_entries
 
@@ -134,8 +132,8 @@ if __name__ == "__main__":
     root_folder = "unpacked"  # Replace with the actual root folder path
     target_filename = "section_000.c"   # Replace with the target file's name
     output_folder = "edited"  # Replace with the output folder path
-    new_first_augs = [FirstAugment.ACCURACY_BOOST, FirstAugment.SAFETY]  # Replace with the desired enum values
-    new_second_augs = [SecondAugment.TREAD_LIGHTLY, SecondAugment.ANTI_LIBRA]  # Replace with the desired enum values
+    new_first_augs = [FirstAugment.ACCURACY_BOOST]  # Replace with the desired enum values
+    new_second_augs = [SecondAugment.ANTI_LIBRA]  # Replace with the desired enum values
     should_add = False
 
     find_and_edit_files(root_folder, target_filename, output_folder, new_first_augs, new_second_augs, should_add)

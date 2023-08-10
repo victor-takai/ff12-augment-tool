@@ -70,6 +70,18 @@ class MainWindow(QMainWindow):
 
     def edit_button_clicked(self):
         selected_augs = [checkbox.text() for checkbox in self.checkboxes if checkbox.isChecked()]
+        should_add = self.add_radio.isChecked()
+        
+        self.edit_augments(selected_augs, should_add)
+
+        if selected_augs:
+            mode = "added" if should_add else "removed"
+            message = f"Augments {mode}!"
+            QMessageBox.information(self, "Info", message)
+        else:
+            QMessageBox.warning(self, "Info", "No items selected.")
+
+    def edit_augments(self, selected_augs, should_add):
         first_augs = []
         second_augs = []
 
@@ -82,17 +94,10 @@ class MainWindow(QMainWindow):
             if second_aug != None:
                 second_augs.append(second_aug)
 
-        root_folder = "unpacked"  # Replace with the actual root folder path
-        target_filename = "section_000.c"   # Replace with the target file's name
-        output_folder = "edited"  # Replace with the output folder path
-        find_and_edit_files(root_folder, target_filename, output_folder, first_augs, second_augs, self.add_radio.isChecked())
-
-        if selected_augs:
-            mode = "added" if self.add_radio.isChecked() else "removed"
-            message = f"Augments {mode}!"
-            QMessageBox.information(self, "Info", message)
-        else:
-            QMessageBox.warning(self, "Info", "No items selected.")
+        root_folder = "unpacked"
+        target_filename = "section_000.c"
+        output_folder = "edited"
+        find_and_edit_files(root_folder, target_filename, output_folder, first_augs, second_augs, should_add)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
