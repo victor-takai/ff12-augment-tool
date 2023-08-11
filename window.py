@@ -1,13 +1,15 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QRadioButton, QGridLayout, QCheckBox, QPushButton, QFrame, QMessageBox
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QRadioButton, QGridLayout, QCheckBox, QPushButton, QFrame, QMessageBox, QLabel
 from augments import FirstAugment, SecondAugment
 from main import find_and_edit_files
+from version import __version__
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("FFXII Augment Tool")
+        self.setWindowTitle(f"FFXII Augment Tool v{__version__}")
         self.setGeometry(100, 100, 400, 400)
         
         self.central_widget = QWidget()
@@ -60,6 +62,10 @@ class MainWindow(QMainWindow):
         
         self.grid_frame.setStyleSheet("background-color: rgb(211, 211, 211);")
 
+        self.name_label = QLabel("Made by Kalivos")
+        self.name_label.setAlignment(Qt.AlignRight)
+        self.layout.addWidget(self.name_label)
+
     def select_all_clicked(self):
         for checkbox in self.checkboxes:
             checkbox.setChecked(True)
@@ -94,10 +100,10 @@ class MainWindow(QMainWindow):
             if second_aug != None:
                 second_augs.append(second_aug)
 
-        root_folder = "unpacked"
-        target_filename = "section_000.c"
+        input_folder = "unpacked"
         output_folder = "edited"
-        find_and_edit_files(root_folder, target_filename, output_folder, first_augs, second_augs, should_add)
+        target_filename = "section_000.c"
+        find_and_edit_files(input_folder, output_folder, target_filename, first_augs, second_augs, should_add)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

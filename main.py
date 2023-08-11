@@ -8,14 +8,14 @@ set_unit_pattern = r'btlAtelSetUnit\(([0-9]+)\)'
 set_ability_pattern = r'btlAtelSetAbility\((-?0x[0-9a-fA-F]+), (-?0x[0-9a-fA-F]+)\)'
 entry_pattern = r'entry[0-9]+\(\)\s*{([^}]*btlAtelSetUnit[^}]*btlAtelSetAbility[^}]*)}'
 
-def find_and_edit_files(root_folder, target_filename, output_folder, new_first_augs, new_second_augs, should_add):
+def find_and_edit_files(input_folder, output_folder, target_filename, new_first_augs, new_second_augs, should_add):
     log_entries = []
     
-    for folder_path, _, filenames in os.walk(root_folder):
+    for folder_path, _, filenames in os.walk(input_folder):
         for file_name in filenames:
             source_path = os.path.join(folder_path, file_name)
 
-            relative_path = os.path.relpath(source_path, root_folder)
+            relative_path = os.path.relpath(source_path, input_folder)
             output_path = os.path.join(output_folder, relative_path)
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
             
@@ -29,6 +29,12 @@ def find_and_edit_files(root_folder, target_filename, output_folder, new_first_a
                     output_file.write(edited_file)
             else:
                 shutil.copy(source_path, output_path)
+
+        # Check if the folder is empty and copy it
+        if not filenames and not os.path.samefile(folder_path, output_folder):
+            output_dir = os.path.join(output_folder, os.path.relpath(folder_path, input_folder))
+            print("output dir", output_dir)
+            os.makedirs(output_dir, exist_ok=True)
 
     log_json_path = os.path.join(output_folder, "log.json")
     with open(log_json_path, 'w', encoding='utf-8') as log_file:
@@ -140,11 +146,11 @@ def map_augments(augs, aug_enum):
     return mapped_augments
 
 if __name__ == "__main__":
-    root_folder = "unpacked"  # Replace with the actual root folder path
-    target_filename = "section_000.c"   # Replace with the target file's name
+    input_folder = "unpacked"  # Replace with the actual root folder path
     output_folder = "edited"  # Replace with the output folder path
-    new_first_augs = [FirstAugment.ACCURACY_BOOST]  # Replace with the desired enum values
-    new_second_augs = [SecondAugment.ANTI_LIBRA]  # Replace with the desired enum values
-    should_add = False
+    target_filename = "section_000.c"   # Replace with the target file's name
+    new_first_augs = []  # Replace with the desired enum values
+    new_second_augs = [SecondAugment.ANTI_LIBRA, SecondAugment.ATTACK_IMMUNITY]  # Replace with the desired enum values
+    should_add = True
 
-    find_and_edit_files(root_folder, target_filename, output_folder, new_first_augs, new_second_augs, should_add)
+    find_and_edit_files(input_folder, output_folder, target_filename, new_first_augs, new_second_augs, should_add)
