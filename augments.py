@@ -8,15 +8,15 @@ class FirstAugment(Enum):
     EVASION_BOOST =             0x0800_0000 # Parry
     LAST_STAND =                0x0400_0000
     COUNTER =                   0x0200_0000
-    COUNTER_BOOST =             0x0100_0000 # Counter Plus
+    COUNTER_BOOST =             0x0100_0000
     SPELLBREAKER =              0x0080_0000
     BRAWLER =                   0x0040_0000
     ADRENALINE =                0x0020_0000
     FOCUS =                     0x0010_0000
     LOBBYING =                  0x0008_0000 # Cat Ear Hood Effect
     COMBO_BOOST =               0x0004_0000 # Gengi Gloves Effect
-    ITEM_BOOST =                0x0002_0000 # Item Plus | Pheasant Netsuke Effect
-    MEDICINE_REVERSE =          0x0001_0000 # Item Reverse | Nihopalaoa Effect
+    ITEM_BOOST =                0x0002_0000 # Pheasant Netsuke Effect
+    MEDICINE_REVERSE =          0x0001_0000 # Nihopalaoa Effect
     WEATHERPROOF =              0x0000_8000 # Null Weather & Terrain | Agate Ring Effect
     THIEVERY =                  0x0000_4000 # Thief Cuffs Effect
     SABOTEUR =                  0x0000_2000 # Null Vit | Indigo Pendant Effect
@@ -36,7 +36,7 @@ class FirstAugment(Enum):
 
 class SecondAugment(Enum):
     OFFERING =                  0x8000_0000 # Turtleshell Choker Effect
-    MUFFLE =                    0x4000_0000 # Invisible to enemies
+    MUFFLE =                    0x4000_0000 # Invisible to Enemies
     LIFE_CLOAK =                0x2000_0000 # ???
     BATTLE_LORE_1 =             0x1000_0000
     PARSIMONY =                 0x0800_0000 # Half MP Cost
