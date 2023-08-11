@@ -13,13 +13,13 @@ class FirstAugment(Enum):
     BRAWLER =                   0x0040_0000
     ADRENALINE =                0x0020_0000
     FOCUS =                     0x0010_0000
-    LOBBYING =                  0x0008_0000 # ???
+    LOBBYING =                  0x0008_0000 # Cat Ear Hood Effect
     COMBO_BOOST =               0x0004_0000 # Gengi Gloves Effect
-    ITEM_BOOST =                0x0002_0000 # Item Plus
-    MEDICINE_REVERSE =          0x0001_0000 # Item Reverse
-    WEATHERPROOF =              0x0000_8000 # Null Weather & Terrain
+    ITEM_BOOST =                0x0002_0000 # Item Plus | Pheasant Netsuke Effect
+    MEDICINE_REVERSE =          0x0001_0000 # Item Reverse | Nihopalaoa Effect
+    WEATHERPROOF =              0x0000_8000 # Null Weather & Terrain | Agate Ring Effect
     THIEVERY =                  0x0000_4000 # Thief Cuffs Effect
-    SABOTEUR =                  0x0000_2000 # Null Vit
+    SABOTEUR =                  0x0000_2000 # Null Vit | Indigo Pendant Effect
     MAGICK_LORE_1 =             0x0000_1000
     WARMAGE =                   0x0000_0800
     MARTYR =                    0x0000_0400
@@ -28,20 +28,20 @@ class FirstAugment(Enum):
     MAGICK_LORE_3 =             0x0000_0080
     TREASURE_HUNTER =           0x0000_0040 # Diamong Armlet Effect
     MAGICK_LORE_4 =             0x0000_0020
-    DOUBLE_EXP =                0x0000_0010
-    DOUBLE_LP =                 0x0000_0008
-    NO_EXP =                    0x0000_0004
+    DOUBLE_EXP =                0x0000_0010 # Embroidered Tipped Effect
+    DOUBLE_LP =                 0x0000_0008 # Golden Amulet Effect
+    NO_EXP =                    0x0000_0004 # Firefly Effect
     SPELLBOUND =                0x0000_0002
-    PIERCING_MAGICK =           0x0000_0001
+    PIERCING_MAGICK =           0x0000_0001 # Opal Ring Effect
 
 class SecondAugment(Enum):
     OFFERING =                  0x8000_0000 # Turtleshell Choker Effect
-    MUFFLE =                    0x4000_0000
-    LIFE_CLOAK =                0x2000_0000
+    MUFFLE =                    0x4000_0000 # Invisible to enemies
+    LIFE_CLOAK =                0x2000_0000 # ???
     BATTLE_LORE_1 =             0x1000_0000
     PARSIMONY =                 0x0800_0000 # Half MP Cost
     TREAD_LIGHTLY =             0x0400_0000 # Steel Polyens Effect
-    UNUSED =                    0x0200_0000
+    UNUSED =                    0x0200_0000 # ???
     EMPTINESS =                 0x0100_0000 # Zero MP
     RESIST_PIERCE_DAMAGE =      0x0080_0000 # Resist Guns & Measures
     ANTI_LIBRA =                0x0040_0000
@@ -60,7 +60,7 @@ class SecondAugment(Enum):
     SWIFT_CAST =                0x0000_0200 # Magick CT 0
     ATTACK_IMMUNITY =           0x0000_0100 # Immune: Attack
     MAGIC_IMMUNITY =            0x0000_0080 # Immune: Magic
-    STATUS_IMMUNITY =           0x0000_0040
+    STATUS_IMMUNITY =           0x0000_0040 # Ribbon Effect
     DAMAGE_SPIKES =             0x0000_0020 # Return Damage
     SUICIDAL =                  0x0000_0010 # ???
     BATTLE_LORE_8 =             0x0000_0008
