@@ -123,23 +123,23 @@ def edit_augments(edited_file, matched_string, source_path, new_first_augs, new_
 def modify_orig_augs(orig_first_augs, orig_second_augs, new_first_augs, new_second_augs, should_add):
     alt_first_augs = orig_first_augs
     for aug_enum in new_first_augs:
-        if should_add:
-            if not (orig_first_augs & aug_enum.value):
-                alt_first_augs = alt_first_augs | aug_enum.value
-        else:
-            if orig_first_augs & aug_enum.value:
-                alt_first_augs = alt_first_augs ^ aug_enum.value
+        modify_bitfield(alt_first_augs, aug_enum.value, should_add)
 
     alt_second_augs = orig_second_augs
     for aug_enum in new_second_augs:
-        if should_add:
-            if not (orig_second_augs & aug_enum.value):
-                alt_second_augs = alt_second_augs | aug_enum.value
-        else:
-            if orig_second_augs & aug_enum.value:
-                alt_second_augs = alt_second_augs ^ aug_enum.value
+        modify_bitfield(alt_second_augs, aug_enum.value, should_add)
    
     return alt_first_augs, alt_second_augs
+    
+def modify_bitfield(original_bitfield, modifying_bitfield, should_add):
+    if should_add:
+        # Check if modifying bitfield is not present
+        if not (original_bitfield & modifying_bitfield):
+            original_bitfield = original_bitfield | modifying_bitfield
+    else:
+        # Check if modifying bitfield is present
+        if (original_bitfield & modifying_bitfield) != 0:
+            original_bitfield = original_bitfield & -modifying_bitfield
 
 def map_augments(augs, aug_enum):
     mapped_augments = [aug.name for aug in aug_enum if augs & aug.value == aug.value]
