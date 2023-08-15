@@ -1,4 +1,5 @@
 import sys
+import os
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QRadioButton, QGridLayout, QCheckBox, QPushButton, QFrame, QMessageBox, QLabel
 from augments import FirstAugment, SecondAugment
@@ -77,25 +78,11 @@ class MainWindow(QMainWindow):
             for checkbox in self.checkboxes:
                 checkbox.setChecked(False)
 
-    def edit_button_clicked(self):
-        selected_augs = [checkbox.text() for checkbox in self.checkboxes if checkbox.isChecked()]
-        should_add = self.add_radio.isChecked()
-        
-        self.edit_augments(selected_augs, should_add)
-
-        if selected_augs:
-            mode = "added" if should_add else "removed"
-            message = f"Augments {mode}!"
-            QMessageBox.information(self, "Info", message)
-        else:
-            QMessageBox.warning(self, "Info", "No items selected.")
-
     def add_checkbox_tooltip(self, checkbox):
-        tooltip_text = self.get_tooltip_text(checkbox.text())  # Customize tooltip text based on checkbox text
+        tooltip_text = self.get_tooltip_text(checkbox.text()) 
         checkbox.setToolTip(tooltip_text)
 
     def get_tooltip_text(self, checkbox_text):
-
         first_augment_tooltips = {
             "STABILITY": "Prevents Knockback.",
             "SAFETY": "Prevents Instant Death, Warp and the like.",
@@ -172,8 +159,37 @@ class MainWindow(QMainWindow):
             return second_augment_tooltips[checkbox_text]
         else:
             return "No tooltip available."
+        
+    def edit_button_clicked(self):
+        output_folder = "edited"
 
-    def edit_augments(self, selected_augs, should_add):
+        if any(os.listdir(output_folder)):
+            reply = QMessageBox.warning(
+                self,
+                "Warning",
+                "It seems there are already edited files in the folder. Proceeding will override the files, do you want to continue?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No
+            )
+            if reply == QMessageBox.Yes:
+                self.process_edit_augments(output_folder)
+        else:
+            self.process_edit_augments(output_folder)
+
+    def process_edit_augments(self, output_folder):
+        selected_augs = [checkbox.text() for checkbox in self.checkboxes if checkbox.isChecked()]
+        should_add = self.add_radio.isChecked()
+        
+        self.edit_augments(output_folder, selected_augs, should_add)
+
+        if selected_augs:
+            mode = "added" if should_add else "removed"
+            message = f"Augments {mode}!"
+            QMessageBox.information(self, "Info", message)
+        else:
+            QMessageBox.warning(self, "Info", "No items selected.")
+
+    def edit_augments(self, output_folder, selected_augs, should_add):
         first_augs = []
         second_augs = []
 
@@ -187,7 +203,6 @@ class MainWindow(QMainWindow):
                 second_augs.append(second_aug)
 
         input_folder = "unpacked"
-        output_folder = "edited"
         target_filename = "section_000.c"
         find_and_edit_files(input_folder, output_folder, target_filename, first_augs, second_augs, should_add)
 
