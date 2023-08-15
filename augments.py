@@ -2,12 +2,12 @@ from enum import Enum
 
 class FirstAugment(Enum):
     STABILITY =                 0x8000_0000 # Null Knockback
-    SAFETY =                    0x4000_0000
+    SAFETY =                    0x4000_0000 # Null Death, Warp
     ACCURACY_BOOST =            0x2000_0000 # Null Evade
     SHIELD_BOOST =              0x1000_0000 # Shield Block
     EVASION_BOOST =             0x0800_0000 # Parry
     LAST_STAND =                0x0400_0000
-    COUNTER =                   0x0200_0000
+    COUNTER =                   0x0200_0000 # Enables Counter
     COUNTER_BOOST =             0x0100_0000
     SPELLBREAKER =              0x0080_0000
     BRAWLER =                   0x0040_0000
@@ -17,7 +17,7 @@ class FirstAugment(Enum):
     COMBO_BOOST =               0x0004_0000 # Gengi Gloves Effect
     ITEM_BOOST =                0x0002_0000 # Pheasant Netsuke Effect
     MEDICINE_REVERSE =          0x0001_0000 # Nihopalaoa Effect
-    WEATHERPROOF =              0x0000_8000 # Null Weather & Terrain | Agate Ring Effect
+    WEATHERPROOF =              0x0000_8000 # Null Weather & Terrain effects | Agate Ring Effect
     THIEVERY =                  0x0000_4000 # Thief Cuffs Effect
     SABOTEUR =                  0x0000_2000 # Null Vit | Indigo Pendant Effect
     MAGICK_LORE_1 =             0x0000_1000
@@ -26,7 +26,7 @@ class FirstAugment(Enum):
     MAGICK_LORE_2 =             0x0000_0200
     HEADSMAN =                  0x0000_0100
     MAGICK_LORE_3 =             0x0000_0080
-    TREASURE_HUNTER =           0x0000_0040 # Diamong Armlet Effect
+    TREASURE_HUNTER =           0x0000_0040 # Diamond Armlet Effect
     MAGICK_LORE_4 =             0x0000_0020
     DOUBLE_EXP =                0x0000_0010 # Embroidered Tipped Effect
     DOUBLE_LP =                 0x0000_0008 # Golden Amulet Effect
@@ -36,8 +36,8 @@ class FirstAugment(Enum):
 
 class SecondAugment(Enum):
     OFFERING =                  0x8000_0000 # Turtleshell Choker Effect
-    MUFFLE =                    0x4000_0000 # Invisible to Enemies
-    LIFE_CLOAK =                0x2000_0000 # ???
+    MUFFLE =                    0x4000_0000 # Avoid detection based on sound and magick
+    LIFE_CLOAK =                0x2000_0000 # Avoid detection based on low HP
     BATTLE_LORE_1 =             0x1000_0000
     PARSIMONY =                 0x0800_0000 # Half MP Cost
     TREAD_LIGHTLY =             0x0400_0000 # Steel Polyens Effect
@@ -62,7 +62,7 @@ class SecondAugment(Enum):
     MAGIC_IMMUNITY =            0x0000_0080 # Immune: Magic
     STATUS_IMMUNITY =           0x0000_0040 # Ribbon Effect
     DAMAGE_SPIKES =             0x0000_0020 # Return Damage
-    SUICIDAL =                  0x0000_0010 # ???
+    SUICIDAL =                  0x0000_0010 # Compels nearby allies to use Self-Destruct
     BATTLE_LORE_8 =             0x0000_0008
     BATTLE_LORE_9 =             0x0000_0004
     BATTLE_LORE_10 =            0x0000_0002

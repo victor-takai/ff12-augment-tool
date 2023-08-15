@@ -52,6 +52,9 @@ class MainWindow(QMainWindow):
             checkbox = QCheckBox(item.name)
             self.grid_layout.addWidget(checkbox, row, col)
             self.checkboxes.append(checkbox)
+
+        for checkbox in self.checkboxes:
+            self.add_checkbox_tooltip(checkbox)
         
         self.layout.addWidget(self.grid_frame)
         
@@ -86,6 +89,89 @@ class MainWindow(QMainWindow):
             QMessageBox.information(self, "Info", message)
         else:
             QMessageBox.warning(self, "Info", "No items selected.")
+
+    def add_checkbox_tooltip(self, checkbox):
+        tooltip_text = self.get_tooltip_text(checkbox.text())  # Customize tooltip text based on checkbox text
+        checkbox.setToolTip(tooltip_text)
+
+    def get_tooltip_text(self, checkbox_text):
+
+        first_augment_tooltips = {
+            "STABILITY": "Prevents Knockback.",
+            "SAFETY": "Prevents Instant Death, Warp and the like.",
+            "ACCURACY_BOOST": "Improves chance to hit. (Ignore/Null Evade)",
+            "SHIELD_BOOST": "Improves chance to block with a shield",
+            "EVASION_BOOST": "Improvse chance of avoiding attacks.",
+            "LAST_STAND": "Increases defense when HP Critical.",
+            "COUNTER": "When attacked, automatically counter with weapon in hand. (Enables Counter)",
+            "COUNTER_BOOST": "Improves chance to counter. (Gengi Gloves Effect)",
+            "SPELLBREAKER": "Increases magick power when HP Critical.",
+            "BRAWLER": "Increases attack power when fighting empty-handed.",
+            "ADRENALINE": "Increases strength when HP Critical.",
+            "FOCUS": "Increases strength when HP is full.",
+            "LOBBYING": "Convert all license points earned to gil. (Cat Ear Hood Effect)",
+            "COMBO_BOOST": "Improves chance of scoring multiple hits.",
+            "ITEM_BOOST": "Improves potency of restorative items and fangs. (Pheasant Netsuke Effect)",
+            "MEDICINE_REVERSE": "Reverses effects of restorative items such as potions. (Nihopalaoa Effect)",
+            "WEATHERPROOF": "Nullifies weather and terrain effects. (Agate Ring Effect)",
+            "THIEVERY": "Enables the theft of superior and rare items. (Thief Cuffs Effect)",
+            "SABOTEUR": "Improves chance to strike with magicks. (Ignore/Null Vit | Indigo Pendant Effect)",
+            "MAGICK_LORE_1": "Increases magick potency.",
+            "WARMAGE": "Gain MP after dealing magick damage.",
+            "MARTYR": "Gain MP after taking damage.",
+            "MAGICK_LORE_2": "Increases magick potency.",
+            "HEADSMAN": "Gain MP after defeating a foe.",
+            "MAGICK_LORE_3": "Increases magick potency.",
+            "TREASURE_HUNTER": "Search the deepest recesses of chests, coffers, and the like. (Diamond Armlet Effect)",
+            "MAGICK_LORE_4": "Increases magick potency.",
+            "DOUBLE_EXP": "Doubles EXP earned. (Embroidered Tipped Effect)",
+            "DOUBLE_LP": "Doubles license points earned. (Golden Amulet Effect)",
+            "NO_EXP": "Reduces EXP earned to 0. (Firefly Effect)",
+            "SPELLBOUND": "Increases duration of status effects.",
+            "PIERCING_MAGICK": "Magicks will not bounce off targets with Reflect status. (Opal Ring Effect)"
+        }
+        
+        second_augment_tooltips = {
+            "OFFERING": "Enables casting of magicks with gil, rather than MP. (Turtleshell Choker Effect)",
+            "MUFFLE": "Avoid detection based on sound and magick.",
+            "LIFE_CLOAK": "Avoid detection based on low HP.",
+            "BATTLE_LORE_1": "Increases physical attack damage.",
+            "PARSIMONY": "Reduces MP costs by half.",
+            "TREAD_LIGHTLY": "Move safely past traps. (Steel Polyens Effect)",
+            "UNUSED": "",
+            "EMPTINESS": "Reduces max MP to 0.",
+            "RESIST_PIERCE_DAMAGE": "Ignores the piercing effects of Guns and the like.",
+            "ANTI_LIBRA": "Hides user's vital information from the effect of Libra.",
+            "BATTLE_LORE_2": "Increases physical attack damage.",
+            "BATTLE_LORE_3": "Increases physical attack damage.",
+            "BATTLE_LORE_4": "Increases physical attack damage.",
+            "BATTLE_LORE_5": "Increases physical attack damage.",
+            "BATTLE_LORE_6": "Increases physical attack damage.",
+            "BATTLE_LORE_7": "Increases physical attack damage.",
+            "STONESKIN": "Reduces damage taken by 30%.",
+            "ATTACK_BOOST": "Increases Attack damage by 20%.",
+            "DOUBLE_EDGED": "Increases Attack damage by 50% and user receives damage equal to each Attack.",
+            "SPELLSPRING": "Reduces MP costs to 0.",
+            "ELEMENTAL_SHIFT": "User gains one elemental weakness and absorbs all others.",
+            "CELERITY": "Reduces Attack charge time to 0.",
+            "SWIFT_CAST": "Reduces Magick charge time to 0.",
+            "ATTACK_IMMUNITY": "User becomes immune to attacks.",
+            "MAGIC_IMMUNITY": "User becomes immune to magicks.",
+            "STATUS_IMMUNITY": "User becomes immune to statuses.",
+            "DAMAGE_SPIKES": "Returns 5% of all damage received to user's attackers.",
+            "SUICIDAL": "Compels nearby allies to use Self-Destruct.",
+            "BATTLE_LORE_8": "Increases physical attack damage.",
+            "BATTLE_LORE_9": "Increases physical attack damage.",
+            "BATTLE_LORE_10": "Increases physical attack damage.",
+            "BATTLE_LORE_11": "Increases physical attack damage."
+        }
+     
+        if checkbox_text in first_augment_tooltips:
+            return first_augment_tooltips[checkbox_text]
+        elif checkbox_text in second_augment_tooltips:
+            return second_augment_tooltips[checkbox_text]
+        else:
+            return "No tooltip available."
 
     def edit_augments(self, selected_augs, should_add):
         first_augs = []
