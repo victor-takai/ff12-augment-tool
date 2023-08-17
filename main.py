@@ -82,12 +82,12 @@ def edit_augments(edited_file, matched_string, source_path, first_augs, second_a
         
         if set_ability_match:
             # Hexdecimal representation of augments bitfield
-            original_augs_hex = set_ability_match.group(1)
-            original_augs_hex = set_ability_match.group(2)
+            original_first_augs_hex = set_ability_match.group(1)
+            original_seconds_augs_hex = set_ability_match.group(2)
         
             # Decimal representation of augments bitfields, also makes it positive
-            original_first_augs = abs(int(original_augs_hex, 16))
-            original_second_augs = abs(int(original_augs_hex, 16))
+            original_first_augs = abs(int(original_first_augs_hex, 16))
+            original_second_augs = abs(int(original_seconds_augs_hex, 16))
 
             edited_first_augs, edited_second_augs = modify_orig_augs(original_first_augs, original_second_augs, first_augs, second_augs, should_add)
 
@@ -120,7 +120,7 @@ def edit_augments(edited_file, matched_string, source_path, first_augs, second_a
                 edited_entry = {
                     "unit": unit_number,
                     "unpacked": {
-                        "btl_atel_set_ability": f"{original_augs_hex}, {original_augs_hex}",
+                        "btl_atel_set_ability": f"{original_first_augs_hex}, {original_seconds_augs_hex}",
                         "first_arg_augments":  map_augments(original_first_augs, FirstAugment),
                         "second_arg_augments": map_augments(original_second_augs, SecondAugment)
                     },
@@ -139,14 +139,14 @@ def edit_augments(edited_file, matched_string, source_path, first_augs, second_a
                     log_objects[index]["edited_entries"]["total"] += 1
                     log_objects[index]["edited_entries"]["entries"].append(edited_entry)
 
-                unpacked_set_ability = f"btlAtelSetAbility({original_augs_hex}, {original_augs_hex})"
+                unpacked_set_ability = f"btlAtelSetAbility({original_first_augs_hex}, {original_seconds_augs_hex})"
                 edited_set_ability = f"btlAtelSetAbility({edited_first_augs_hex}, {edited_second_augs_hex})"
                 edited_file = edited_file.replace(unpacked_set_ability, edited_set_ability)
             else:
                 unchanged_entry = {
                         "unit": unit_number,
                         "unpacked": {
-                            "btl_atel_set_ability": f"{original_augs_hex}, {original_augs_hex}",
+                            "btl_atel_set_ability": f"{original_first_augs_hex}, {original_seconds_augs_hex}",
                             "first_arg_augments":  map_augments(original_first_augs, FirstAugment),
                             "second_arg_augments": map_augments(original_second_augs, SecondAugment)
                         }
@@ -198,8 +198,8 @@ if __name__ == "__main__":
     input_folder = "unpacked"  # Replace with the actual root folder path
     output_folder = "edited"  # Replace with the output folder path
     target_filename = "section_000.c"   # Replace with the target file's name
-    first_augs = []  # Replace with the desired enum values
-    second_augs = [SecondAugment.ANTI_LIBRA]  # Replace with the desired enum values
+    first_augs = [FirstAugment.ACCURACY_BOOST, FirstAugment.PIERCING_MAGICK]  # Replace with the desired enum values
+    second_augs = []  # Replace with the desired enum values
     should_add = False
 
     find_and_edit_files(input_folder, output_folder, target_filename, first_augs, second_augs, should_add)
