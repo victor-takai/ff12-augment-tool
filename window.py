@@ -162,8 +162,9 @@ class MainWindow(QMainWindow):
         
     def edit_button_clicked(self):
         output_folder = "edited"
+        files_in_directory = os.listdir(output_folder)
 
-        if any(os.listdir(output_folder)):
+        if any(file != ".gitkeep" for file in files_in_directory):
             reply = QMessageBox.warning(
                 self,
                 "Warning",

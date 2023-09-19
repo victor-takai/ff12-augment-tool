@@ -195,11 +195,11 @@ def map_augments(augs, aug_enum):
     return mapped_augments
 
 if __name__ == "__main__":
-    input_folder = "unpacked"  # Replace with the actual root folder path
-    output_folder = "edited"  # Replace with the output folder path
-    target_filename = "section_000.c"   # Replace with the target file's name
-    first_augs = [FirstAugment.ACCURACY_BOOST, FirstAugment.PIERCING_MAGICK]  # Replace with the desired enum values
-    second_augs = []  # Replace with the desired enum values
+    input_folder = "unpacked" # Replace with the actual root folder path
+    output_folder = "edited" # Replace with the output folder path
+    target_filename = "section_000.c" # Replace with the target file's name
+    first_augs = [FirstAugment.ACCURACY_BOOST, FirstAugment.PIERCING_MAGICK] # Replace with the desired enum values
+    second_augs = [] # Replace with the desired enum values
     should_add = False
 
     find_and_edit_files(input_folder, output_folder, target_filename, first_augs, second_augs, should_add)
